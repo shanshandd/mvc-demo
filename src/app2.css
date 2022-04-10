@@ -1,0 +1,25 @@
+#app2>div {
+    width: 200px;
+}
+
+#app2 ol {
+    display: flex;
+}
+
+#app2 ol>li {
+    flex: 1;
+    border: 1px solid red;
+}
+
+#app2 ol>li.selected {
+    background-color: rgb(218, 145, 145);
+    color: white
+}
+
+#app2 ul>li {
+    display: none;
+}
+
+#app2 ul>li.active {
+    display: block;
+}
