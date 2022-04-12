@@ -11292,41 +11292,87 @@ return jQuery;
 },{"process":"C:/Users/huale/AppData/Roaming/npm/node_modules/parcel/node_modules/process/browser.js"}],"app1.js":[function(require,module,exports) {
 "use strict";
 
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = void 0;
+
 var _jquery = _interopRequireDefault(require("jquery"));
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-console.log(localStorage.getItem('app1.num'));
-var num = parseFloat(localStorage.getItem('app1.num') || 100);
-(0, _jquery.default)('.number').text(num);
-var add = (0, _jquery.default)('.add').get(0);
-var min = (0, _jquery.default)('.min').get(0);
-var mul = (0, _jquery.default)('.mul').get(0);
-var div = (0, _jquery.default)('.div').get(0);
-
-add.onclick = function () {
-  num += 1;
-  (0, _jquery.default)('.number').text(num);
-  localStorage.setItem('app1.num', num);
+var eventBus = (0, _jquery.default)({});
+var m = {
+  data: {
+    num: parseFloat(localStorage.getItem('app1.num') || 100)
+  },
+  update: function update(data) {
+    Object.assign(m.data, data);
+    eventBus.trigger('m:updated');
+    localStorage.setItem('app1.num', m.data.num);
+  }
 };
+var v = {
+  el: null,
+  html: "\n    <div>\n        <div><span class=\"number\">{num}</span></div>\n        <button class=\"add\">+1</button>\n        <button class=\"min\">-1</button>\n        <button class=\"mul\">*2</button>\n        <button class=\"div\">\xF72</button>\n    </div>\n    ",
+  init: function init(container) {
+    v.el = (0, _jquery.default)(container);
+  },
+  render: function render() {
+    if (v.el.children().length > 0) {
+      v.el.empty();
+    }
 
-min.onclick = function () {
-  num -= 1;
-  (0, _jquery.default)('.number').text(num);
-  localStorage.setItem('app1.num', num);
+    (0, _jquery.default)(v.html.replace('{num}', m.data.num)).appendTo(v.el);
+  }
 };
-
-mul.onclick = function () {
-  num *= 2;
-  (0, _jquery.default)('.number').text(num);
-  localStorage.setItem('app1.num', num);
+var c = {
+  init: function init(container) {
+    v.init(container);
+    v.render(m.data.num);
+    c.toBindEvent();
+    eventBus.on('m:updated', function () {
+      v.render(m.data.num);
+    });
+  },
+  add: function add() {
+    m.update({
+      num: m.data.num + 1
+    });
+  },
+  min: function min() {
+    m.update({
+      num: m.data.num - 1
+    });
+  },
+  mul: function mul() {
+    m.update({
+      num: m.data.num * 2
+    });
+  },
+  div: function div() {
+    m.update({
+      num: m.data.num / 2
+    });
+  },
+  eventsList: {
+    'click .add': 'add',
+    'click .min': 'min',
+    'click .mul': 'mul',
+    'click .div': 'div'
+  },
+  toBindEvent: function toBindEvent() {
+    for (var event in c.eventsList) {
+      var value = c.eventsList[event];
+      var spaceIndex = event.indexOf(' ');
+      var part1 = event.slice(0, spaceIndex);
+      var part2 = event.slice(spaceIndex);
+      (0, _jquery.default)(v.el).on(part1, part2, c[value]);
+    }
+  }
 };
-
-div.onclick = function () {
-  num /= 2;
-  (0, _jquery.default)('.number').text(num);
-  localStorage.setItem('app1.num', num);
-};
+var _default = c;
+exports.default = _default;
 },{"jquery":"../node_modules/jquery/dist/jquery.js"}],"app2.css":[function(require,module,exports) {
 var reloadCSS = require('_css_loader');
 
@@ -11417,13 +11463,17 @@ require("./reset.css");
 
 require("./style.css");
 
-require("./app1.js");
+var _app = _interopRequireDefault(require("./app1.js"));
 
 require("./app2.js");
 
 require("./app3.js");
 
 require("./app4.js");
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+_app.default.init('#app1');
 },{"./reset.css":"reset.css","./style.css":"style.css","./app1.js":"app1.js","./app2.js":"app2.js","./app3.js":"app3.js","./app4.js":"app4.js"}],"C:/Users/huale/AppData/Roaming/npm/node_modules/parcel/src/builtins/hmr-runtime.js":[function(require,module,exports) {
 var global = arguments[3];
 var OVERLAY_ID = '__parcel__error__overlay__';
@@ -11452,7 +11502,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "50593" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "50166" + '/');
 
   ws.onmessage = function (event) {
     checkedAssets = {};
